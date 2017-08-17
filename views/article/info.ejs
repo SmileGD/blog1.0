@@ -1,0 +1,64 @@
+<%- include('../logouts/header.ejs') %>
+    <div class="container-fluid">
+        <h2>文章详情页</h2>
+        <hr>
+        <h3 style="text-align:center">
+            <%= article.title %>
+                <% if(islogin && user.id === article.authorId){ %>
+                    <!-- <small><a href="/article/delete?id=<%= article.id %>" class="pull-right btn btn-link">删除此文章</a></small> -->
+                    <small><a href="javascript:;"  data-toggle="modal" data-target="#myModal" class="pull-right btn btn-link">删除此文章</a></small>
+                    <small><a href="/article/edit?id=<%= article.id %>" class="pull-right btn btn-link">编辑此文章</a></small>
+                    <% } %>
+        </h3>
+        <!-- 删除文章模块框 -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">刪除文章</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>你是否确定要删除此文章</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" id='btn' class="btn btn-primary">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>
+            <strong>作者： <%= article.nickname %></strong>&nbsp;&nbsp;&nbsp;
+            <strong>发表时间： <%= article.ctime %></strong>
+        </p>
+        <hr>
+        <div class="content" style="width:80%;margin:0px auto;">
+            <%- article.content %>
+        </div>
+    </div>
+
+    <script>
+        $(function() {
+            $('#btn').on('click', function() {
+                $.ajax({
+                    url: '/article/delete',
+                    type: 'post',
+                    data: {
+                        id: '<%= article.id %>'
+                    },
+                    dataType: 'json',
+                    success: function(results) {
+                        if (results.err_code === 0) {
+                            location.href = '/';
+                        } else {
+                            alert(results.msg);
+                        }
+                    }
+                })
+            })
+
+        })
+    </script>
+    <%- include('../logouts/footer.ejs') %>
